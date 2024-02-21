@@ -34,14 +34,14 @@ const update = catchError(async(req, res) => {
     return res.json(updatedUser);
 });
 
-const login = catchError(async (res, req) => {
+const login = catchError(async (req, res) => {
     const {email, password} = req.body;
 
     const user = await User.findOne({where: {email}});
-    if(!user) return res.sendStatus(404).json({error: "user not found"});
+    if(!user) return res.sendStatus(404).json({error: "Invalid credentials"});
 
     const passIsValid = await bcrypt.compare(password, user.password);
-    if(!passIsValid) return res.sendStatus(401).json({error: "Incorrect password"});
+    if(!passIsValid) return res.sendStatus(401).json({error: "Invalid credentials"});
 
     const token = jwt.sign(
         {user},
