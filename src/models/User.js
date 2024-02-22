@@ -34,13 +34,13 @@ User.prototype.toJSON = function () {
 
 User.beforeCreate(async (user) => {
     const password = user.password;
-    hashPasword = await bcrypt.hash(password, 12);
+    hashPasword = await bcrypt.hash(password, 10);
     user.password = hashPasword;
 });
 
 User.beforeUpdate(async (user) => {
     const password = user.password;
-    hashPasword = await bcrypt.hash(password, 12);
+    hashPasword = await bcrypt.hash(password, 10);
     user.password = hashPasword;
 });
 
