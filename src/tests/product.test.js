@@ -1,15 +1,16 @@
+require('../models');
 const request = require("supertest");
 const app = require("../app");
 const Category = require("../models/Category");
-const User = require("../models/User");
 
 const BASE_URL = "/products";
-const USERS_BASE_URL = "/users"
+const USERS_LOGIN_URL = "/users/login"
 
 let product;
 let token;
 let productId;
 let category;
+let categoryId;
 
 beforeAll(async () => {
     const user = {
@@ -18,12 +19,13 @@ beforeAll(async () => {
     }
 
     const res = await request(app)
-        .post(`${USERS_BASE_URL}/login`)
+        .post(`${USERS_LOGIN_URL}`)
         .send({email: user.email, password: user.password});
 
     token = res.body.token;
 
     category = await Category.create({name: "Smart TV"});
+    categoryId = category.id;
 
     product = {
         title: "Lg oled 55",
@@ -34,7 +36,7 @@ beforeAll(async () => {
     
 });
 
-test("POST -> /products, should return status code 201, res.body is defined, and res.body.title === product.title",
+test("POST -> /products, should return status code 201, res.body is defined, and res.body.categoryId === product.categoryId",
     async () => {
         const res = await request(app)
             .post(BASE_URL)
@@ -45,7 +47,7 @@ test("POST -> /products, should return status code 201, res.body is defined, and
 
         expect(res.statusCode).toBe(201);
         expect(res.body).toBeDefined();
-        expect(res.body.title).toBe(product.title);
+        expect(res.body.categoryId).toBe(product.categoryId);
     }
 );
 
@@ -57,6 +59,25 @@ test("GET -> /products should return status code 200, res.body is defined, and r
         expect(res.statusCode).toBe(200);
         expect(res.body).toBeDefined();
         expect(res.body).toHaveLength(1);
+        expect(res.body[0].category).toBeDefined();
+        expect(res.body[0].category.id).toBe(category.id);
+    }
+);
+
+test("GET -> /products should return status code 200, res.body is defined, res.body.length === 1, and ",
+    async () => {
+        const res = await request(app)
+            .get(`${BASE_URL}?categoryId=${categoryId}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toBeDefined();
+        expect(res.body).toHaveLength(1);
+
+        expect(res.body[0].categoryId).toBeDefined();
+        expect(res.body[0].categoryId).toBe(category.id);
+
+        expect(res.body[0].category).toBeDefined();
+        expect(res.body[0].category.id).toBe(category.id);
     }
 );
 
@@ -68,6 +89,9 @@ test("GET -> /products/:id, should return status code 200, res.body is defined, 
         expect(res.statusCode).toBe(200);
         expect(res.body).toBeDefined();
         expect(res.body.title).toBe(product.title);
+
+        expect(res.body.category).toBeDefined();
+        expect(res.body.category.id).toBe(category.id);
     }
 );
 
