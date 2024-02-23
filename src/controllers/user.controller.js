@@ -39,9 +39,9 @@ const login = catchError(async (req, res) => {
 
     const user = await User.findOne({where: {email}});
     if(!user) return res.sendStatus(401).json({error: "Invalid credentials"});
-/*
+
     const passIsValid = await bcrypt.compare(password, user.password);
-    if(!passIsValid) return res.sendStatus(401).json({error: "Invalid credentials"});]*/
+    if(!passIsValid) return res.sendStatus(401).json({error: "Invalid credentials"});
 
     const token = jwt.sign(
         {user},

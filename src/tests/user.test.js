@@ -45,7 +45,6 @@ test("POST -> /users, should return status code 201, res.body is defined, and re
             .post(BASE_URL)
             .send(user);
 
-        console.log(res.body);
         userId = res.body.id;
 
         expect(res.statusCode).toBe(201);
@@ -79,7 +78,6 @@ test("POST -> /users/login, should return status code 200, res.body is defined, 
             .post(`${BASE_URL}/login`)
             .send(userLogin);
 
-        console.log(res.body);
         expect(res.statusCode).toBe(200);
         expect(res.body).toBeDefined();
         expect(res.body.user.email).toBe(userLogin.email);
@@ -90,7 +88,7 @@ test("POST -> /users/login, should return status code 200, res.body is defined, 
 test("POST -> /users/login, should return status code 401",
     async () => {
         const userLogin = {
-            email: "j@gmail.com",
+            email: "john@gmail.com",
             password: "invalid password"
         }
         
