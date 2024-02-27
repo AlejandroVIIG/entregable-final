@@ -33,6 +33,37 @@ const findAll = catchError(async(req, res) => {
     return res.json(carts);
 });
 
+const findOne = catchError(async(req, res) => {
+    const {id: userId} = req.user;
+    const {id} = req.params;
+    const carts = await Cart.findByPk(id,
+    {
+        where: {userId},
+        attributes: {
+            exclude: ["updatedAt", "createdAt"]
+        },
+        include:[
+            {
+                model: Product,
+                attributes: {
+                    exclude: ["id", "updatedAt", "createdAt"],
+                },
+                include: [{
+                    model: Category,
+                    attributes: ["name"]
+                }]
+            },
+            {
+                model: User,
+                attributes: {
+                    exclude: ["id", "password", "updatedAt", "createdAt"]
+                }
+            }
+        ]
+    });
+    return res.json(carts);
+});
+
 const create = catchError(async(req, res) => {
     const {id: userId} = req.user;
     const {quantity, productId} = req.body
@@ -74,6 +105,7 @@ const update = catchError(async(req, res) => {
 
 module.exports = {
     findAll,
+    findOne,
     create,
     remove,
     update
