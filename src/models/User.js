@@ -28,7 +28,7 @@ const User = sequelize.define('user', {
 
 User.prototype.toJSON = function () {
    const values = { ...this.get() };
-   delete values.password ;
+   delete values.password;
    return values;
 }
 
