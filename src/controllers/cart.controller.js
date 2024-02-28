@@ -3,6 +3,7 @@ const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const Category = require('../models/Category');
+const ProductImg = require('../models/productImg');
 
 const findAll = catchError(async(req, res) => {
     const {id: userId} = req.user;
@@ -19,9 +20,9 @@ const findAll = catchError(async(req, res) => {
                 }]
             },
             {
-                model: User,
-                attributes: {
-                    exclude: ["id", "password", "updatedAt", "createdAt"]
+                model: ProductImg,
+                attributes:{
+                    exclude: ["id", "createdAt", "updatedAt"]
                 }
             }
         ],
@@ -36,17 +37,15 @@ const findAll = catchError(async(req, res) => {
 const findOne = catchError(async(req, res) => {
     const {id: userId} = req.user;
     const {id} = req.params;
-    const carts = await Cart.findByPk(id,
+    const cart = await Cart.findByPk(id,
     {
         where: {userId},
-        attributes: {
-            exclude: ["updatedAt", "createdAt"]
-        },
+        
         include:[
             {
                 model: Product,
                 attributes: {
-                    exclude: ["id", "updatedAt", "createdAt"],
+                    exclude: ["updatedAt", "createdAt"],
                 },
                 include: [{
                     model: Category,
@@ -54,14 +53,14 @@ const findOne = catchError(async(req, res) => {
                 }]
             },
             {
-                model: User,
-                attributes: {
-                    exclude: ["id", "password", "updatedAt", "createdAt"]
+                model: ProductImg,
+                attributes:{
+                    exclude: ["createdAt", "updatedAt"]
                 }
             }
         ]
     });
-    return res.json(carts);
+    return res.json(cart);
 });
 
 const create = catchError(async(req, res) => {

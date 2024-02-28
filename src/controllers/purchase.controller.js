@@ -3,6 +3,7 @@ const Purchase = require('../models/Purchase');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
+const ProductImg = require('../models/productImg');
 
 const findAll = catchError(async(req, res) => {
     const {id: userId} = req.user;
@@ -20,6 +21,9 @@ const findAll = catchError(async(req, res) => {
                     model: Category,
                     attributes: ["id", "name"]
                 }
+            },
+            {
+                model: ProductImg
             }
         ]
     });
