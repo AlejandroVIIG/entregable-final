@@ -17,13 +17,12 @@ const findAll = catchError(async(req, res) => {
                 attributes: {
                     exclude: ["id","createdAt", "updatedAt"]
                 },
-                include: {
+                include: [{
                     model: Category,
                     attributes: ["id", "name"]
-                }
-            },
-            {
-                model: ProductImg
+                },
+                ProductImg
+                ]
             }
         ]
     });

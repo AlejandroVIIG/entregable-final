@@ -11,7 +11,6 @@ const findAll = catchError(async (req, res) => {
 
 const create = catchError(async (req, res) => {
     const {filename} = req.file;
-    console.log(filename);
 
     // req.protocols == http, req.headers.host == localhost:8080
     const url = `${req.protocol}://${req.headers.host}/uploads/${filename}`;

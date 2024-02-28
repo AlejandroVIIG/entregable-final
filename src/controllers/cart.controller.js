@@ -17,13 +17,9 @@ const findAll = catchError(async(req, res) => {
                 include: [{
                     model: Category,
                     attributes: ["name"]
+                },{
+                    model: ProductImg
                 }]
-            },
-            {
-                model: ProductImg,
-                attributes:{
-                    exclude: ["id", "createdAt", "updatedAt"]
-                }
             }
         ],
         where: {userId},
@@ -50,13 +46,9 @@ const findOne = catchError(async(req, res) => {
                 include: [{
                     model: Category,
                     attributes: ["name"]
+                },{
+                    model: ProductImg
                 }]
-            },
-            {
-                model: ProductImg,
-                attributes:{
-                    exclude: ["createdAt", "updatedAt"]
-                }
             }
         ]
     });
@@ -65,9 +57,11 @@ const findOne = catchError(async(req, res) => {
 
 const create = catchError(async(req, res) => {
     const {id: userId} = req.user;
-    const {quantity, productId} = req.body
+    const {quantity, productId} = req.body;
     const cartToCreate = {quantity, productId, userId};
+    console.log("controller: cartToCreate -> " + JSON.stringify(cartToCreate));
     const newCart = await Cart.create(cartToCreate);
+    console.log("controller: newCart -> " + JSON.stringify(newCart));
     return res.status(201).json(newCart);
 });
 

@@ -1,4 +1,3 @@
-require('./User');
 const Cart = require('./Cart');
 const Category = require('./Category');
 const Product = require('./Product');

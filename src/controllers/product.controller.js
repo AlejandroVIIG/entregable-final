@@ -8,7 +8,6 @@ const findAll = catchError(async(req, res) => {
     const products = await Product.findAll({
         where,
         include: [Category, ProductImg]
-        
     });
     return res.json(products);
 });
