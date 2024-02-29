@@ -1,3 +1,4 @@
+require("../models");
 const request = require("supertest");
 const Product = require("../models/Product");
 const app = require("../app");
@@ -43,19 +44,16 @@ test("POST -> /cart, should return status code 201, res.body is defined and res.
                         .send(cart)
                         .set("Authorization", `Bearer ${token}`);
 
-        console.log(res.body);
         cartId = res.body.id;
 
         expect(res.statusCode).toBe(201);
         expect(res.body).toBeDefined();
         expect(res.body.quantity).toBe(1);
         expect(res.body.userId).toBe(userId)
-
-        await product.destroy();
+        expect(res.body.quantity).toBe(cart.quantity);
     }
 );
 
-/*
 test("GET -> /cart, should return status code 200, res.body is defined and res.body.length === 1",
     async () => {
         const res = await request(app)
@@ -65,6 +63,56 @@ test("GET -> /cart, should return status code 200, res.body is defined and res.b
         expect(res.statusCode).toBe(200);
         expect(res.body).toBeDefined();
         expect(res.body).toHaveLength(1);
+
+        expect(res.body[0].userId).toBeDefined();
+        expect(res.body[0].userId).toBe(userId);
+
+        expect(res.body[0].productId).toBeDefined();
+        expect(res.body[0].productId).toBe(product.id);
+
+        
     }
 );
-*/
+
+test("GET -> 'cart/:id', should return status 200, res.body is defined and res.body.quantity === cart.quantity",
+    async () => {
+        const res = await request(app)
+                        .get(`${BASE_URL}/${cartId}`)
+                        .set('Authorization', `Bearer ${token}`);
+    
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toBeDefined();
+        expect(res.body.quantity).toBe(cart.quantity);
+    
+        expect(res.body.userId).toBeDefined();
+        expect(res.body.userId).toBe(userId);
+    
+        expect(res.body.productId).toBeDefined();
+        expect(res.body.productId).toBe(product.id);
+    }
+);
+
+test("PUT -> 'cart/:id' should return status code 200, res.body is defined, and res.body.quantity === 3",
+    async () => {
+
+        const res = await request(app)
+                        .put(`${BASE_URL}/${cartId}`)
+                        .send({ quantity: 3 })
+                        .set('Authorization', `Bearer ${token}`);
+
+        expect(res.statusCode).toBe(200)
+        expect(res.body).toBeDefined()
+        expect(res.body.quantity).toBe(3)
+    }
+);
+
+test("DELETE -> 'URL_BASE/:id' should return status code 204",
+    async () => {
+        const res = await request(app)
+                        .delete(`${BASE_URL}/${cartId}`)
+                        .set('Authorization', `Bearer ${token}`);
+    
+        expect(res.status).toBe(204);
+        await product.destroy();
+    }
+);

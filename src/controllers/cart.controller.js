@@ -59,9 +59,7 @@ const create = catchError(async(req, res) => {
     const {id: userId} = req.user;
     const {quantity, productId} = req.body;
     const cartToCreate = {quantity, productId, userId};
-    console.log("controller: cartToCreate -> " + JSON.stringify(cartToCreate));
     const newCart = await Cart.create(cartToCreate);
-    console.log("controller: newCart -> " + JSON.stringify(newCart));
     return res.status(201).json(newCart);
 });
 
@@ -84,15 +82,10 @@ const remove = catchError(async(req, res) => {
 const update = catchError(async(req, res) => {
     const { id } = req.params;
     const {id: userId} = req.user;
-    const cart = await Cart.findByPk({
-        where:{
-            id,
-            userId
-        }
-    });
+    const cart = await Cart.findByPk(id, {where:{userId}});
     if(!cart) return res.sendStatus(404);
     const {quantity} = req.body;
-    const updatedCart = await cart.update(quantity);
+    const updatedCart = await cart.update({quantity});
     return res.json(updatedCart);
 });
 

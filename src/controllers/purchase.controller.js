@@ -53,7 +53,7 @@ const create = catchError(async (req, res) => {
         await cart.destroy();
     }
 
-    return res.json(newPurchase);
+    return res.status(201).json(newPurchase);
 });
 
 module.exports = {
